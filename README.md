@@ -93,4 +93,4 @@ idf.py flash monitor
 
 ## 许可证
 
-GPL-3.0-or-later
+Apache-2.0
