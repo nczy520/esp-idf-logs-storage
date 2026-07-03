@@ -1,6 +1,9 @@
 idf_component_register(
     SRCS
         "src/logs_spiffs.c"
+        "src/logs_spiffs_storage.c"
+        "src/logs_spiffs_worker.c"
+        "src/logs_spiffs_rotation.c"
     INCLUDE_DIRS
         "include"
     REQUIRES

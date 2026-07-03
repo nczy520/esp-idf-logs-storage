@@ -18,6 +18,18 @@ bool logs_spiffs_init(void);
  */
 void logs_spiffs_deinit(void);
 
+typedef enum {
+    LOGS_SPIFFS_LEVEL_INFO = 0,
+    LOGS_SPIFFS_LEVEL_WARN = 1,
+    LOGS_SPIFFS_LEVEL_ERROR = 2
+} logs_spiffs_level_t;
+
+/**
+ * @brief 设置当前日志级别，低于该级别的日志将被忽略
+ * @param level 允许写入的最低级别：INFO/WARN/ERROR
+ */
+void logs_spiffs_set_level(logs_spiffs_level_t level);
+
 /**
  * @brief 写入一条日志（格式化字符串）
  * @param format printf 风格格式字符串
@@ -25,6 +37,14 @@ void logs_spiffs_deinit(void);
  * @note 线程安全，自动添加时间戳和换行
  */
 void logs_spiffs_write(const char *format, ...);
+
+/**
+ * @brief 写入一条指定级别的日志
+ * @param level 日志级别，支持 INFO/WARN/ERROR
+ * @param format printf 风格格式字符串
+ * @param ... 可变参数
+ */
+void logs_spiffs_write_level(logs_spiffs_level_t level, const char *format, ...);
 
 /**
  * @brief 格式化 SPIFFS 分区（擦除所有数据），然后重启系统
