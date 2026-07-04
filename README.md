@@ -24,7 +24,7 @@
 
 ```yaml
 dependencies:
-  esp-idf-logs-spiffs:
+  logs-spiffs:
     git: https://github.com/nczy520/esp-idf-logs-spiffs.git
     version: main
 ```
