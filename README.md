@@ -24,9 +24,9 @@
 
 ```yaml
 dependencies:
-  nczy520/esp-idf-logs-spiffs:
+  esp-idf-logs-spiffs:
     git: https://github.com/nczy520/esp-idf-logs-spiffs.git
-    version: "*"
+    version: main
 ```
 
 然后在应用代码中调用：
