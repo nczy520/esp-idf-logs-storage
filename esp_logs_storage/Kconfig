@@ -1,0 +1,111 @@
+menu "ESP Log Storage Configuration"
+
+    config LOGS_STORAGE_AUTO_START_WEB
+        bool "Auto-start Web Server on Boot"
+        default y
+        help
+            Automatically start the WiFi AP and Web server when the device boots.
+
+    config LOGS_STORAGE_WEB_PORT
+        int "Web Server Port"
+        default 8080
+        range 1 65535
+        help
+            HTTP server port number.
+
+    config LOGS_STORAGE_AP_SSID
+        string "WiFi AP SSID Prefix"
+        default "LOGS"
+        help
+            Prefix for the WiFi AP SSID name. The full SSID will be LOGS-<MAC>.
+
+    config LOGS_STORAGE_AP_PASSWORD
+        string "WiFi AP Password"
+        default "12345678"
+        help
+            Password for the WiFi AP (minimum 8 characters).
+
+    config LOGS_STORAGE_AP_CHANNEL
+        int "WiFi AP Channel"
+        default 1
+        range 1 14
+        help
+            WiFi channel for the AP.
+
+    config LOGS_STORAGE_AP_MAX_CONNECTIONS
+        int "Max WiFi Connections"
+        default 4
+        range 1 10
+        help
+            Maximum number of simultaneous WiFi connections.
+
+    config LOGS_STORAGE_IDLE_TIMEOUT_MS
+        int "Idle Timeout (ms)"
+        default 180000
+        help
+            Time in milliseconds before auto-closing the AP when no clients are connected.
+            Default is 3 minutes (180000 ms).
+
+    config LOGS_STORAGE_MAX_FILE_SIZE
+        int "Max Log File Size (bytes)"
+        default 1048576
+        help
+            Maximum size of a single log file before rotation (default 1MB).
+
+    config LOGS_STORAGE_MAX_FILE_COUNT
+        int "Max Log File Count"
+        default 10
+        help
+            Maximum number of log files to keep before deleting old ones.
+
+    config LOGS_STORAGE_MIN_FREE_SPACE
+        int "Min Free Space (bytes)"
+        default 262144
+        help
+            Minimum free space in bytes before triggering cleanup (default 256KB).
+
+    config LOGS_STORAGE_ROTATE_THRESHOLD
+        int "Rotate Threshold (bytes)"
+        default 8192
+        help
+            Minimum free space threshold in bytes before triggering rotation (default 8KB).
+
+    config LOGS_STORAGE_CONSOLE_OUTPUT
+        bool "Enable Console Output"
+        default n
+        help
+            Enable synchronous console output for log messages.
+
+    config LOGS_STORAGE_LOG_LEVEL
+        int "Default Log Level"
+        default 1
+        range 0 3
+        help
+            Default log level: 0=DEBUG, 1=INFO, 2=WARN, 3=ERROR.
+
+    config LOGS_STORAGE_BASE_PATH
+        string "Storage Base Path"
+        default "/storage"
+        help
+            Base path for log file storage.
+
+    config LOGS_STORAGE_FILE_PREFIX
+        string "Log File Prefix"
+        default ""
+        help
+            Prefix for log file names, e.g., "log_" results in log_000001.log.
+
+    config LOGS_STORAGE_FILE_EXT
+        string "Log File Extension"
+        default ".log"
+        help
+            Extension for log files.
+
+    config LOGS_STORAGE_FILENAME_DIGITS
+        int "Filename Number Digits"
+        default 6
+        range 1 10
+        help
+            Number of digits in the filename, e.g., 6 digits results in 000001.log.
+
+endmenu

@@ -5,7 +5,7 @@
 [![Target](https://img.shields.io/badge/target-ESP32--S2%2FS3%2FC5%2FC6%2FH2-orange)](https://www.espressif.com/en/products/socs/esp32-s3)
 [![Version](https://img.shields.io/badge/version-1.1.2-blue)](https://github.com/nczy520/esp-idf-logs-storage)
 
-一个面向 ESP-IDF 的 FAT 日志组件，提供自动轮转、空间控制和线程安全写入能力，适合在设备端把运行日志落盘到 FAT 分区。
+一个面向 ESP-IDF 的 SPIFFS 日志组件，提供自动轮转、空间控制和线程安全写入能力，适合在设备端把运行日志落盘到 SPIFFS 分区。
 
 ## 项目结构
 
@@ -31,8 +31,8 @@ esp-idf-logs-storage/
 - 自动创建并轮转日志文件
 - 超过大小时自动切换文件
 - 低空间时自动清理旧日志
-- 通过队列和后台工作线程串行化写入，避免多线程同时写入 FAT 文件造成竞争
-- 批量写入（最多 8 条或 200ms 触发一次 flush），降低 FAT 写放大开销
+- 通过队列和后台工作线程串行化写入，避免多线程同时写入 SPIFFS 文件造成竞争
+- 批量写入（最多 8 条或 200ms 触发一次 flush），降低 SPIFFS 写放大开销
 - 日志级别过滤（INFO / WARN / ERROR）
 - 代码按模块拆分，便于维护：存储层、工作线程层、公共接口层
 - 可直接作为 ESP-IDF 组件被其他项目引用
@@ -81,7 +81,7 @@ void app_main(void) {
 - `logs_storage_write()` 会写入默认级别的 INFO 日志。
 - `logs_storage_write_level()` 可显式指定 `INFO/WARN/ERROR`。
 - `logs_storage_rotation_config_*()` 可以调整轮转阈值、最大文件大小、保留文件数和最低剩余空间。
-- `logs_storage_format()` 会擦除整个 storage 分区（FAT 格式化），成功返回 `ESP_OK`，失败返回相应 `esp_err_t`。调用前后建议先 `logs_storage_deinit()`、格式化后再 `logs_storage_init()` 重新挂载。
+- `logs_storage_format()` 会擦除整个 storage 分区（SPIFFS 格式化），成功返回 `ESP_OK`，失败返回相应 `esp_err_t`。调用前后建议先 `logs_storage_deinit()`、格式化后再 `logs_storage_init()` 重新挂载。
 
 ### 控制台日志输出
 
@@ -108,7 +108,7 @@ idf.py flash monitor
 示例会演示：
 
 - 设置轮转配置
-- 初始化 FAT 日志组件
+- 初始化 SPIFFS 日志组件
 - 使用不同级别的日志写入
 - 观察日志文件被生成和轮转
 
@@ -116,12 +116,12 @@ idf.py flash monitor
 
 | 函数 | 说明 |
 |------|------|
-| `logs_storage_init()` | 初始化：挂载 FAT，启动 worker，创建初始日志文件 |
-| `logs_storage_deinit()` | 反初始化：停止 worker，关闭文件，卸载 FAT |
+| `logs_storage_init()` | 初始化：挂载 SPIFFS，启动 worker，创建初始日志文件 |
+| `logs_storage_deinit()` | 反初始化：停止 worker，关闭文件，卸载 SPIFFS |
 | `logs_storage_set_level()` | 设置最低日志级别 |
 | `logs_storage_write()` | 写入一条 INFO 级别日志 |
 | `logs_storage_write_level()` | 写入一条指定级别日志 |
-| `logs_storage_format()` | 格式化 storage 分区（FAT）并返回 `esp_err_t` |
+| `logs_storage_format()` | 格式化 storage 分区（SPIFFS）并返回 `esp_err_t` |
 | `logs_storage_rotation_config_default()` | 获取默认轮转配置 |
 | `logs_storage_rotation_config_set()` | 设置当前轮转配置 |
 | `logs_storage_rotation_config_get()` | 读取当前轮转配置 |
@@ -136,7 +136,7 @@ idf.py flash monitor
 | `max_file_size_bytes` | 512 KB | 单个日志文件最大尺寸 |
 | `max_log_files` | 99 | 保留的日志文件数量上限 |
 | `rotate_threshold_bytes` | 8 KB | 创建新文件前需保证的最小可用空间 |
-| `max_files_open` | 5 | FAT 允许同时打开的文件数量 |
+| `max_files_open` | 5 | SPIFFS 允许同时打开的文件数量 |
 
 ## 许可证
 

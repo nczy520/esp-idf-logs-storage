@@ -1,20 +1,27 @@
 idf_component_register(
     SRCS
-        "src/logs_storage.c"
-        "src/logs_storage_backend.c"
-        "src/logs_storage_file_utils.c"
-        "src/logs_storage_buffer.c"
-        "src/logs_storage_usb.c"
-        "src/logs_storage_usb_msc.c"
-        "src/logs_storage_worker.c"
-        "src/logs_storage_rotation.c"
+        "src/core/logs_storage.c"
+        "src/core/logs_storage_backend.c"
+        "src/core/logs_storage_file_utils.c"
+        "src/core/logs_storage_worker.c"
+        "src/core/logs_storage_rotation.c"
+        "src/core/logs_storage_web_config.c"
+        "src/web/web_main.c"
+        "src/web/web_wifi.c"
+        "src/web/web_api.c"
+        "src/web/web_ui.c"
+        "src/web/web_dns_server.c"
     INCLUDE_DIRS
         "include"
     REQUIRES
-        fatfs
-        wear_levelling
-        esp_tinyusb
+        spi_flash
+        spiffs
         esp_system
         esp_timer
+        esp_wifi
+        esp_http_server
+        esp_event
+        esp_netif
+        nvs_flash
         freertos
 )
