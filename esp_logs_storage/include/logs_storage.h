@@ -1,6 +1,8 @@
 #pragma once
 
 #include <stdbool.h>
+#include <stddef.h>
+#include <stdarg.h>
 #include "esp_err.h"
 
 #ifdef __cplusplus
@@ -8,64 +10,93 @@ extern "C" {
 #endif
 
 /**
- * @brief 初始化日志管理模块
- * @return true 成功，false 失败
+ * @brief 日志级别，值越大级别越高
+ */
+typedef enum {
+    LOGS_STORAGE_LEVEL_DEBUG   = 0,
+    LOGS_STORAGE_LEVEL_INFO    = 1,
+    LOGS_STORAGE_LEVEL_WARN    = 2,
+    LOGS_STORAGE_LEVEL_ERROR   = 3,
+    LOGS_STORAGE_LEVEL_NONE    = 4
+} logs_storage_level_t;
+
+/**
+ * @brief 初始化日志存储
+ *
+ * 挂载 SPIFFS 文件系统，创建日志文件，启动 worker 任务。
+ *
+ * @return 成功返回 true，失败返回 false
  */
 bool logs_storage_init(void);
 
 /**
- * @brief 反初始化，关闭文件并卸载 storage
+ * @brief 反初始化日志存储
+ *
+ * 停止 worker，关闭日志文件，卸载 SPIFFS。
  */
 void logs_storage_deinit(void);
 
-typedef enum {
-    LOGS_STORAGE_LEVEL_INFO = 0,
-    LOGS_STORAGE_LEVEL_WARN = 1,
-    LOGS_STORAGE_LEVEL_ERROR = 2
-} logs_storage_level_t;
+/**
+ * @brief 写入一条日志（格式化字符串）
+ *
+ * @param level 日志级别
+ * @param format printf 风格格式字符串
+ * @return 成功返回 true，失败（队列满/级别不够）返回 false
+ */
+bool logs_storage_write_level(logs_storage_level_t level, const char *format, ...);
 
 /**
- * @brief 设置最低日志级别
+ * @brief 写入一条已格式化的日志消息
+ *
+ * @param level 日志级别
+ * @param message 完整的日志消息
+ * @return 成功返回 true，失败返回 false
+ */
+bool logs_storage_write(logs_storage_level_t level, const char *message);
+
+/**
+ * @brief 设置日志级别过滤阈值
+ *
+ * 低于此级别的日志将被丢弃。
+ *
+ * @param level 日志级别
  */
 void logs_storage_set_level(logs_storage_level_t level);
 
 /**
- * @brief 写入一条 INFO 级别日志
+ * @brief 获取当前日志级别
+ *
+ * @return 当前日志级别
  */
-void logs_storage_write(const char *format, ...);
+logs_storage_level_t logs_storage_get_level(void);
 
 /**
- * @brief 写入一条指定级别的日志
+ * @brief 打印所有现存日志文件列表
  */
-void logs_storage_write_level(logs_storage_level_t level, const char *format, ...);
+void logs_storage_list_files(void);
 
 /**
- * @brief 格式化 storage 分区
+ * @brief 格式化存储分区（清除所有日志）
+ *
+ * @return ESP_OK 成功，其他失败
  */
 esp_err_t logs_storage_format(void);
 
 /**
- * @brief 暴露 storage 分区为 USB MSC U 盘
- * @note  日志记录不会停止，U 盘模式下日志暂存在内存中。
- *        主机端"安全弹出"后，内存日志自动写入磁盘并重启恢复。
+ * @brief 设置是否在控制台同步输出日志
+ *
+ * 开启后，写入存储的日志会同时输出到串口控制台。
+ *
+ * @param enable true 开启同步输出，false 关闭
  */
-void logs_storage_usb_msc_init(void);
+void logs_storage_set_console_output(bool enable);
 
 /**
- * @brief 停止 USB MSC，恢复磁盘日志记录
+ * @brief 获取当前控制台同步输出状态
+ *
+ * @return true 已开启，false 已关闭
  */
-void logs_storage_usb_msc_deinit(void);
-
-/**
- * @brief 查询当前是否处于 USB MSC 模式
- */
-bool logs_storage_is_usb_mode_active(void);
-
-/**
- * @brief 强制退出 USB 模式（用于重启前）
- * @note  通知弹出监控任务跳过检测，避免复位过程中的死循环。
- */
-void logs_storage_force_exit_usb_mode(void);
+bool logs_storage_get_console_output(void);
 
 #ifdef __cplusplus
 }

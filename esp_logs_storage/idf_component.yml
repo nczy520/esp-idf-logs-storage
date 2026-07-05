@@ -1,5 +1,5 @@
-version: "1.1.2"
-description: "Storage-backed log manager for ESP-IDF with automatic rotation and space control."
+version: "2.0.0"
+description: "Storage-backed log manager for ESP-IDF with automatic rotation and space control (SPIFFS backend)."
 license: "Apache-2.0"
 url: "https://github.com/nczy520/esp-idf-logs-storage"
 repository: "https://github.com/nczy520/esp-idf-logs-storage.git"
@@ -12,17 +12,18 @@ tags:
   - filesystem
   - storage
 targets:
+  - esp32
   - esp32s2
   - esp32s3
+  - esp32c3
   - esp32c5
   - esp32c6
   - esp32c61
   - esp32h2
+  - esp32p4
 dependencies:
   idf:
     version: ">=6.0.0"
-  espressif/esp_tinyusb:
-    version: "^2.0.0"
 files:
   exclude:
     - "build/**/*"
